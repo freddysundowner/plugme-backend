@@ -4,6 +4,50 @@ const functions = require("../shared/functions");
 const stripeSecretKey = "sk_test_51LnLMXBxPn92AhXI9F0l9uAq0k4dFPuU93rxzQcCGWE8nAajaWGDeRgOCLdqULqJCVfA0zkF2ai9Z6lOoEYCmPzc00XmfNhuEi";
 
 const stripe = require("stripe")(stripeSecretKey);
+
+exports.transfer = async (req, res) => {
+  try {
+    const amount = req.body.amount;
+    const accountNumber = req.body.account;
+
+    const transfer = await stripe.transfers.create({
+      amount: amount,
+      currency: "usd",
+      destination: accountNumber,
+      transfer_group: "ORDER_95",
+    });
+    res.status(200).json(transfer);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+exports.createPayment = async (req, res) => {
+  try {
+    const amount = req.body.amount;
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: amount,
+      currency: "usd",
+      automatic_payment_methods: {
+        enabled: true,
+      },
+      payment_method_options: {
+        card: {
+          capture_method: "manual",
+        },
+      },
+    });
+    res.status(200).json(paymentIntent);
+  } catch (err) {
+    res.status(500).send({
+      message: err.message,
+    });
+  }
+};
+
+
+
 exports.createIntent = async (req, res) => {
   try {
     console.log(stripeSecretKey);
