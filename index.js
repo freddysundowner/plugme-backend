@@ -2,7 +2,6 @@ const express = require("express");
 const http = require("http");
 const cors = require("cors");
 const stripeRouter = require("./src/routes/stripeRoute");
-const roomsRoute = require("./src/routes/rooms");
 const flutterWaveRoute = require("./src/routes/flutterwave");
 require("dotenv").config();
 /*****************
